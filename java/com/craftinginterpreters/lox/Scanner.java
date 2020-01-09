@@ -72,6 +72,9 @@ class Scanner {
             if (match('/')) {
                 // A comment goes until the end of the line.
                 while (peek() != '\n' && !isAtEnd()) advance();
+            } else if (match('*')) {
+                // A /* ... */ style block comment.
+                blockComment();
             } else {
                 addToken(SLASH);
             }
@@ -80,7 +83,7 @@ class Scanner {
         case ' ':
         case '\r':
         case '\t':
-            // Ignore whitespace
+            // Ignore whitespace.
             break;
             
         case '\n':
@@ -124,6 +127,25 @@ class Scanner {
         }
 
         addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
+    }
+
+    private void blockComment() {
+        while (peek()     != '*' &&
+               peekNext() != '/' &&
+               !isAtEnd()) {
+            if (peek() == '\n') line++;
+            advance();
+        }
+
+        // Unterminated block comment.
+        if (isAtEnd()) {
+            Lox.error(line, "Unterminated /* ... */ style block comment");
+            return;
+        }
+
+        // The closing */.
+        advance();
+        advance();
     }
 
     private void string() {
