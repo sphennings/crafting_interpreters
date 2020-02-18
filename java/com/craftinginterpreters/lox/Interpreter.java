@@ -10,6 +10,19 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return expr.value;
     }
 
+    @Override
+    public Object visitLogicalExpr(Expr.Logical expr) {
+	Object left = evaluate(expr.left);
+
+	if (expr.operator.type == TokenType.OR) {
+	    if (isTruthy(left)) return left;
+	} else {
+	    if (!isTruthy(left)) return left;
+	}
+
+	return evaluate(expr.right);
+    }
+
     void interpret(List<Stmt> statements) {
         try {
 	    for (Stmt statement : statements) {
