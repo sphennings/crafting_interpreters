@@ -4,6 +4,9 @@ BUILD_DIR := build
 clean:
 	@ rm -rf $(BUILD_DIR)
 
+debug:
+	@ $(MAKE) -f util/c.make NAME=cloxd MODE=debug SOURCE_DIR=c
+
 # Compile and run the AST generator.
 generate_ast:
 	@ $(MAKE) -f util/java.make DIR=java PACKAGE=tool
