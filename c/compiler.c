@@ -251,6 +251,15 @@ static void declareVariable() {
   addLocal(*name);
 }
 
+static void and_(bool canAssign) {
+  int endJump = emitJump(OP_JUMP_IF_FALSE);
+
+  emitByte(OP_POP);
+  parsePrecedence(PREC_AND);
+
+  patchJump(endJump);
+}
+
 static uint8_t parseVariable(const char* errorMessage) {
   consume(TOKEN_IDENTIFIER, errorMessage);
 
@@ -386,7 +395,7 @@ ParseRule rules [] = {
   { variable, NULL,    PREC_NONE },        // TOKEN_IDENTIFIER
   { string,   NULL,    PREC_NONE },        // TOKEN_STRING
   { number,   NULL,    PREC_NONE },        // TOKEN_NUMBER
-  { NULL,     NULL,    PREC_NONE },        // TOKEN_AND
+  { NULL,     and_,    PREC_AND },         // TOKEN_AND
   { NULL,     NULL,    PREC_NONE },        // TOKEN_CLASS
   { NULL,     NULL,    PREC_NONE },        // TOKEN_ELSE
   { literal,  NULL,    PREC_NONE },        // TOKEN_FALSE
