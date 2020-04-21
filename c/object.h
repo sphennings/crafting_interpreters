@@ -2,6 +2,7 @@
 #define clox_object_h
 
 #include "common.h"
+#include "object.h"
 #include "chunk.h"
 #include "value.h"
 
